@@ -1,0 +1,17 @@
+# Entorno Python
+.venv/
+__pycache__/
+*.pyc
+
+# Secretos (MAP_KEY de FIRMS)
+.env
+
+# Datos pesados (se regeneran con el pipeline)
+data/raw/**/*.csv
+data/processed/*.parquet
+data/contexto/**/*
+!data/**/.gitkeep
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
