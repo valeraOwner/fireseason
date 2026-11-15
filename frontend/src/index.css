@@ -194,3 +194,22 @@ select.en-linea { min-width: 0; padding: 1px 6px; margin-left: 6px; font-size: 1
   .grilla.en-vivo { grid-template-columns: 1fr; }
   .mapa { height: 460px; }
 }
+
+/* ===== Globo 3D ===== */
+.contenedor-globo { position: relative; padding: 0; overflow: hidden; height: 680px; background: #07080c; }
+.leyenda-globo { position: absolute; left: 14px; bottom: 14px; background: rgba(19, 19, 18, .82);
+  border: 1px solid var(--borde); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column;
+  gap: 4px; font-size: 13px; pointer-events: none; backdrop-filter: blur(4px); }
+.leyenda-globo div { display: grid; grid-template-columns: 22px 1fr 30px; align-items: end; gap: 6px; }
+.leyenda-globo div span:last-child { text-align: right; font-variant-numeric: tabular-nums; color: var(--texto-2); }
+.leyenda-globo p { font-size: 11px; color: var(--texto-3); max-width: 190px; margin-top: 4px; }
+.llama-icono { width: calc(7px * var(--escala)); height: calc(11px * var(--escala)); justify-self: center;
+  background: radial-gradient(ellipse at 50% 85%, #fff6d8 0 18%, var(--estado) 45%, transparent 72%);
+  border-radius: 50% 50% 45% 45% / 65% 65% 35% 35%; }
+.ayuda-globo { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); font-size: 12px;
+  color: var(--texto-3); pointer-events: none; white-space: nowrap; }
+.tooltip-globo { position: absolute; transform: translate(-50%, calc(-100% - 22px)); pointer-events: none;
+  background: var(--superficie-2); border: 1px solid var(--borde); border-top: 3px solid var(--estado);
+  border-radius: 6px; padding: 6px 10px; font-size: 13px; white-space: nowrap; }
+.tooltip-globo strong { color: var(--estado); }
+@media (max-width: 1000px) { .contenedor-globo { height: 480px; } }
