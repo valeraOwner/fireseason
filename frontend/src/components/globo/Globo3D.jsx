@@ -2,6 +2,7 @@ import { OrbitControls, Stars, useTexture } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { AdditiveBlending, BackSide, BufferAttribute, BufferGeometry, SRGBColorSpace, Vector3 } from 'three'
+import { ESTADOS } from '../../constantes'
 import { aVector, lineasDeGeojson } from './geo'
 import Llamas from './Llamas'
 
@@ -89,6 +90,22 @@ function Vuelo({ destino, controles }) {
   return null
 }
 
+// ---------- Sensibilidad según la altura (como Google Earth) ----------
+// OrbitControls gira siempre los mismos grados por píxel: de cerca, el suelo "volaba" bajo el mouse.
+// Aquí el giro y el zoom se hacen más finos mientras más cerca está la cámara de la superficie.
+function SensibilidadAdaptativa({ controles }) {
+  const { camera } = useThree()
+  useFrame(() => {
+    const c = controles.current
+    if (!c) return
+    const dist = camera.position.length()
+    const altura = dist - 1                                   // radio de la Tierra = 1
+    c.rotateSpeed = 0.5 * Math.min(1, Math.max(0.025, altura / 1.6))
+    c.zoomSpeed = 0.8 * Math.min(1, Math.max(0.12, (altura / dist) * 2.2))
+  })
+  return null
+}
+
 // ---------- Clic y "hover": se busca la llama más cercana al puntero en pantalla ----------
 function Seleccion({ eventos, onSeleccionar, onHover }) {
   const { camera, gl } = useThree()
@@ -111,9 +128,10 @@ function Seleccion({ eventos, onSeleccionar, onHover }) {
         v.copy(p).project(camera)
         const x = ((v.x + 1) / 2) * r.width
         const y = ((1 - v.y) / 2) * r.height
-        // la llama se dibuja hacia arriba desde su base: el clic vale hasta ~14 px por encima
+        // la llama se dibuja hacia arriba desde su base: el clic vale en toda su altura
+        const altoLlama = 0.03 / (2 * Math.tan((camera.fov * Math.PI) / 360)) * r.height * ESTADOS[eventos[i].estado].escala
         const arriba = y - my
-        const d = Math.hypot(mx - x, arriba > 0 ? Math.max(0, arriba - 14) : arriba)
+        const d = Math.hypot(mx - x, arriba > 0 ? Math.max(0, arriba - altoLlama * 0.8) : arriba)
         if (d < mejorD) { mejorD = d; mejor = { i, x, y } }
       })
       return mejor
@@ -168,7 +186,8 @@ export default function Globo3D({ eventos, seleccionado, onSeleccionar, onHover 
       <Limites />
       <Llamas eventos={eventos} />
       <OrbitControls ref={controles} makeDefault enablePan={false} minDistance={1.12} maxDistance={6}
-        rotateSpeed={0.45} zoomSpeed={0.7} enableDamping dampingFactor={0.08} />
+        rotateSpeed={0.5} zoomSpeed={0.8} enableDamping dampingFactor={0.08} />
+      <SensibilidadAdaptativa controles={controles} />
       <Vuelo destino={destino} controles={controles} />
       <Seleccion eventos={eventos} onSeleccionar={onSeleccionar} onHover={onHover} />
     </Canvas>

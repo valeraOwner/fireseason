@@ -33,14 +33,21 @@ export default function MapaEnVivo({ eventos, focos, seleccionado, onSeleccionar
 
   return (
     <MapContainer center={CENTRO_PERU} zoom={5} minZoom={4} className="mapa" preferCanvas={false}>
+      {/* Mapa base oscuro de Esri (no pide clave; CARTO ahora la exige y mostraba "API KEY REQUIRED") */}
       <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
+        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+        attribution='Mapa base &copy; <a href="https://www.esri.com/">Esri</a>, HERE, Garmin, &copy; OpenStreetMap'
+        maxNativeZoom={16}
       />
       {limites && (
         <GeoJSON data={limites} interactive={false}
-          style={{ color: '#6b6a64', weight: 0.8, fill: false, opacity: 0.6 }} />
+          style={{ color: '#8a8880', weight: 0.8, fill: false, opacity: 0.6 }} />
       )}
+      {/* Nombres de ciudades y países (capa transparente sobre el mapa base, debajo de los incendios) */}
+      <TileLayer
+        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
+        maxNativeZoom={16} zIndex={5}
+      />
 
       {/* Cada foco detectado: punto pequeño */}
       {focos.map((f, i) => (

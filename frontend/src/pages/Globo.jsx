@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import FichaEvento from '../components/envivo/FichaEvento'
 import PanelAlertas from '../components/envivo/PanelAlertas'
 import Globo3D from '../components/globo/Globo3D'
+import IconoLlama from '../components/globo/IconoLlama'
 import { ESTADOS, ORDEN_ESTADOS, hace } from '../constantes'
 import { api } from '../services/api'
 
@@ -53,13 +54,13 @@ export default function Globo() {
           {/* Leyenda: el estado se lee por color, tamaño y texto */}
           <div className="leyenda-globo" aria-label="Leyenda">
             {ORDEN_ESTADOS.map((id) => (
-              <div key={id} style={{ '--estado': ESTADOS[id].color, '--escala': ESTADOS[id].escala }}>
-                <span className="llama-icono" aria-hidden="true" />
+              <div key={id}>
+                <IconoLlama color={ESTADOS[id].color} escala={ESTADOS[id].escala} />
                 <strong>{ESTADOS[id].nombre}</strong>
                 <span>{datos?.resumen[id] ?? '—'}</span>
               </div>
             ))}
-            <p>Llama tenue y quieta = en observación (sin focos nuevos en 24 h)</p>
+            <p><IconoLlama color={ESTADOS.alto.color} atenuada /> Tenue y quieta = en observación (sin focos nuevos en 24 h)</p>
           </div>
 
           <p className="ayuda-globo">Arrastra para girar · rueda para acercar · clic en una llama para ver su ficha</p>
