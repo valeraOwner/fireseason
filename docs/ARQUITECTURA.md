@@ -49,7 +49,7 @@ fireseason/
 │   ├── 03_armonizar.py           rejilla común + calibración MODIS↔VIIRS
 │   ├── 04_agregar.py             tablas día/semana/mes/año por celda y región
 │   ├── 05_contexto.py            áreas protegidas (SERNANP) y centros poblados (GeoNames)
-│   └── 06_modelo_riesgo.py       climatología + modelo de predicción por celda-semana
+│   └── 06_prediccion.py          climatología por celda-semana + ajuste por actividad reciente + validación
 │
 ├── backend/app/
 │   ├── main.py
@@ -112,6 +112,7 @@ Accesibilidad: el estado se comunica con **tamaño + color + ícono/texto**, no 
   distancia a poblados/ANP; opcional clima (NASA POWER / Open-Meteo).
 - La barra de tiempo mueve las próximas 1–12 semanas y el mapa/globo muestra el riesgo esperado.
 - Se presenta como **riesgo estacional esperado**, no como certeza de que ocurra un incendio.
+- **Resultado de la validación (2020–2025, años no usados al ajustar):** la climatología tiene AUC 0.89 y mejora ~29 % el puntaje de Brier frente a una probabilidad fija; el ajuste por los últimos 7 días aporta solo ~0.3 % (el fuego en el Perú es sobre todo estacional). Detalle en `data/processed/prediccion_modelo.json` y `docs/figuras/validacion_prediccion.png`.
 
 ### 3.5 Visualización 3D (Three.js)
 - **React Three Fiber** (Three.js para React) + **drei**; globo terráqueo centrado en Sudamérica.

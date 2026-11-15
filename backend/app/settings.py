@@ -45,3 +45,7 @@ CLIMA_SEMANAL = PROCESSED / "clima_semanal_provincia.parquet"   # factor C
 FRECUENCIA = PROCESSED / "frecuencia_celda_mes.parquet"         # factor D
 ZONAS_PROTEGIDAS = PROCESSED / "zonas_protegidas.geojson"      # factor F (lo crea 05_contexto.py)
 POBLADOS = PROCESSED / "poblados.csv"                           # factor E (lo crea 05_contexto.py)
+
+# Predicción (lo crea pipeline/06_prediccion.py)
+PREDICCION_CLIMA = PROCESSED / "prediccion_clima.parquet"
+PREDICCION_MODELO = PROCESSED / "prediccion_modelo.json"

@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import settings
-from app.routers import descarga, en_vivo, historico, metodologia, regiones
+from app.routers import descarga, en_vivo, historico, metodologia, prediccion, regiones
 from app.services import datos
 
 
@@ -42,6 +42,7 @@ app.include_router(historico.router)
 app.include_router(descarga.router)
 app.include_router(metodologia.router)
 app.include_router(en_vivo.router)
+app.include_router(prediccion.router)
 
 
 @app.get("/api/salud", tags=["Sistema"])

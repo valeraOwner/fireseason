@@ -66,3 +66,19 @@ export function hace(iso) {
 // Hora del Perú (UTC-5)
 export const horaPeru = (iso) =>
   new Date(iso).toLocaleString('es-PE', { timeZone: 'America/Lima', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+
+// ----- Predicción: probabilidad de fuego de una celda (~11 km) en la semana -----
+// Rampa secuencial de un solo tono (la misma del calendario): oscuro = poco, brillante = mucho
+export const NIVELES_RIESGO = [
+  { desde: 0.6, nombre: 'Muy alto', detalle: '60 % o más', color: RAMPA_FUEGO[6] },
+  { desde: 0.35, nombre: 'Alto', detalle: '35–60 %', color: RAMPA_FUEGO[5] },
+  { desde: 0.15, nombre: 'Moderado', detalle: '15–35 %', color: RAMPA_FUEGO[3] },
+  { desde: 0.03, nombre: 'Bajo', detalle: '3–15 %', color: RAMPA_FUEGO[2] },
+]
+export const nivelDe = (p) => NIVELES_RIESGO.find((n) => p >= n.desde) ?? null
+
+// "19 nov – 25 nov"
+export const rangoFechas = (inicio, fin) => {
+  const f = (iso) => new Date(`${iso}T12:00:00`).toLocaleDateString('es-PE', { day: 'numeric', month: 'short' })
+  return `${f(inicio)} – ${f(fin)}`
+}

@@ -1,0 +1,117 @@
+{
+  "anios_climatologia": [
+    2013,
+    2025
+  ],
+  "definicion": "probabilidad de al menos un foco VIIRS en la celda de 0.1° durante la semana",
+  "beta": 0.25,
+  "decaimiento": 1.0,
+  "suavizado": 5.0,
+  "anios_ajuste": [
+    2013,
+    2019
+  ],
+  "anios_prueba": [
+    2020,
+    2025
+  ],
+  "auc_climatologia": 0.891,
+  "por_horizonte": [
+    {
+      "semanas": 1,
+      "brier_constante": 0.057,
+      "brier_climatologia": 0.04057,
+      "brier_modelo": 0.04044,
+      "skill_climatologia_pct": 28.8,
+      "mejora_ajuste_pct": 0.3
+    },
+    {
+      "semanas": 2,
+      "brier_constante": 0.0574,
+      "brier_climatologia": 0.04078,
+      "brier_modelo": 0.04067,
+      "skill_climatologia_pct": 28.9,
+      "mejora_ajuste_pct": 0.3
+    },
+    {
+      "semanas": 3,
+      "brier_constante": 0.0581,
+      "brier_climatologia": 0.04124,
+      "brier_modelo": 0.04112,
+      "skill_climatologia_pct": 29.0,
+      "mejora_ajuste_pct": 0.3
+    },
+    {
+      "semanas": 4,
+      "brier_constante": 0.05881,
+      "brier_climatologia": 0.0417,
+      "brier_modelo": 0.04164,
+      "skill_climatologia_pct": 29.1,
+      "mejora_ajuste_pct": 0.1
+    },
+    {
+      "semanas": 5,
+      "brier_constante": 0.05962,
+      "brier_climatologia": 0.04226,
+      "brier_modelo": 0.04221,
+      "skill_climatologia_pct": 29.1,
+      "mejora_ajuste_pct": 0.1
+    },
+    {
+      "semanas": 6,
+      "brier_constante": 0.06058,
+      "brier_climatologia": 0.04292,
+      "brier_modelo": 0.04285,
+      "skill_climatologia_pct": 29.1,
+      "mejora_ajuste_pct": 0.2
+    },
+    {
+      "semanas": 7,
+      "brier_constante": 0.06163,
+      "brier_climatologia": 0.04366,
+      "brier_modelo": 0.04357,
+      "skill_climatologia_pct": 29.2,
+      "mejora_ajuste_pct": 0.2
+    },
+    {
+      "semanas": 8,
+      "brier_constante": 0.06261,
+      "brier_climatologia": 0.04432,
+      "brier_modelo": 0.04427,
+      "skill_climatologia_pct": 29.2,
+      "mejora_ajuste_pct": 0.1
+    },
+    {
+      "semanas": 9,
+      "brier_constante": 0.06382,
+      "brier_climatologia": 0.04516,
+      "brier_modelo": 0.0451,
+      "skill_climatologia_pct": 29.2,
+      "mejora_ajuste_pct": 0.1
+    },
+    {
+      "semanas": 10,
+      "brier_constante": 0.06504,
+      "brier_climatologia": 0.04602,
+      "brier_modelo": 0.04593,
+      "skill_climatologia_pct": 29.2,
+      "mejora_ajuste_pct": 0.2
+    },
+    {
+      "semanas": 11,
+      "brier_constante": 0.0663,
+      "brier_climatologia": 0.04688,
+      "brier_modelo": 0.04687,
+      "skill_climatologia_pct": 29.3,
+      "mejora_ajuste_pct": 0.0
+    },
+    {
+      "semanas": 12,
+      "brier_constante": 0.06762,
+      "brier_climatologia": 0.04779,
+      "brier_modelo": 0.04778,
+      "skill_climatologia_pct": 29.3,
+      "mejora_ajuste_pct": 0.0
+    }
+  ]
+}

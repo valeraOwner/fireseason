@@ -22,6 +22,10 @@ export const api = {
   anomalia: (region, anio, mes) => pedir('/historico/anomalia', { region, anio, mes }),
   enVivo: (actualizar) => pedir('/en-vivo', { actualizar: actualizar || undefined }),
   evento: (id) => pedir(`/en-vivo/eventos/${id}`),
+  predSemanas: (region) => pedir('/prediccion/semanas', { region }),
+  predCeldas: (h, region) => pedir('/prediccion/celdas', { h, region }),
+  predRanking: (h, nivel, limite) => pedir('/prediccion/ranking', { h, nivel, limite }),
+  predModelo: () => pedir('/prediccion/modelo'),
   ranking: (nivel, desde, hasta, metrica, departamento) =>
     pedir('/historico/ranking', { nivel, desde, hasta, metrica, departamento }),
 }
