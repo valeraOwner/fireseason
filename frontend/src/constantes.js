@@ -45,3 +45,24 @@ export const CATEGORIAS = [
 
 export const fmt = (n, dec = 0) =>
   n == null || Number.isNaN(n) ? '—' : Number(n).toLocaleString('es-PE', { maximumFractionDigits: dec })
+
+// ----- En vivo: estados de riesgo (docs/POLITICA_ESTADOS.md) -----
+// El estado nunca se comunica solo con color: también tamaño, ícono y texto.
+export const ESTADOS = {
+  critico: { nombre: 'Crítico', color: '#e5383b', icono: '◆', escala: 2.3, accion: 'Alerta prioritaria; derivar a las autoridades' },
+  alto: { nombre: 'Alto', color: '#f08a24', icono: '▲', escala: 1.6, accion: 'Aviso; revisar en cada pase de satélite' },
+  prevencion: { nombre: 'Prevención', color: '#e8c547', icono: '●', escala: 1, accion: 'Monitoreo; sin alerta' },
+}
+export const ORDEN_ESTADOS = ['critico', 'alto', 'prevencion']
+
+// "hace 3 h" a partir de una fecha ISO
+export function hace(iso) {
+  const min = Math.round((Date.now() - new Date(iso)) / 60000)
+  if (min < 60) return `hace ${Math.max(min, 1)} min`
+  const h = Math.round(min / 60)
+  return h < 48 ? `hace ${h} h` : `hace ${Math.round(h / 24)} días`
+}
+
+// Hora del Perú (UTC-5)
+export const horaPeru = (iso) =>
+  new Date(iso).toLocaleString('es-PE', { timeZone: 'America/Lima', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })

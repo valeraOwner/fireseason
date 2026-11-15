@@ -1,6 +1,25 @@
+import { useState } from 'react'
+import EnVivo from './pages/EnVivo'
 import Historico from './pages/Historico'
 
+const PAGINAS = {
+  historico: { nombre: 'Histórico', componente: Historico },
+  'en-vivo': { nombre: 'En vivo', componente: EnVivo },
+}
+const PRONTO = ['Predicción', 'Metodología']
+
+// La página activa se guarda en la URL (#en-vivo) para poder compartir el enlace
+const paginaDeUrl = () => (PAGINAS[location.hash.slice(1)] ? location.hash.slice(1) : 'historico')
+
 export default function App() {
+  const [pagina, setPagina] = useState(paginaDeUrl)
+  const Pagina = PAGINAS[pagina].componente
+
+  const ir = (id) => {
+    history.replaceState(null, '', `#${id}`)
+    setPagina(id)
+  }
+
   return (
     <div className="app">
       <header className="cabecera">
@@ -12,14 +31,18 @@ export default function App() {
           </div>
         </div>
         <nav>
-          <a className="activo" href="#">Histórico</a>
-          <a className="pronto" title="Próximamente">En vivo</a>
-          <a className="pronto" title="Próximamente">Predicción</a>
-          <a className="pronto" title="Próximamente">Metodología</a>
+          {Object.entries(PAGINAS).map(([id, p]) => (
+            <a key={id} href={`#${id}`} className={pagina === id ? 'activo' : ''}
+              aria-current={pagina === id ? 'page' : undefined}
+              onClick={(e) => { e.preventDefault(); ir(id) }}>
+              {id === 'en-vivo' && <span className="punto-vivo" aria-hidden="true" />}{p.nombre}
+            </a>
+          ))}
+          {PRONTO.map((n) => <a key={n} className="pronto" title="Próximamente">{n}</a>)}
         </nav>
       </header>
       <main>
-        <Historico />
+        <Pagina />
       </main>
       <footer className="pie">
         Datos: NASA FIRMS (MODIS C6.1, VIIRS 375 m) · Límites: IGN Perú vía geoBoundaries ·

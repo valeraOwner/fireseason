@@ -20,6 +20,8 @@ export const api = {
   climatologia: (region) => pedir('/historico/climatologia', { region }),
   serieAnual: (region, desde, hasta, metrica) => pedir('/historico/serie-anual', { region, desde, hasta, metrica }),
   anomalia: (region, anio, mes) => pedir('/historico/anomalia', { region, anio, mes }),
+  enVivo: (actualizar) => pedir('/en-vivo', { actualizar: actualizar || undefined }),
+  evento: (id) => pedir(`/en-vivo/eventos/${id}`),
   ranking: (nivel, desde, hasta, metrica, departamento) =>
     pedir('/historico/ranking', { nivel, desde, hasta, metrica, departamento }),
 }
