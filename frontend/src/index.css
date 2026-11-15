@@ -1,0 +1,120 @@
+/* ===== FireSeason · tema oscuro ===== */
+:root {
+  --fondo: #131312;
+  --superficie: #1a1a19;
+  --superficie-2: #232321;
+  --borde: #2e2e2b;
+  --texto: #ecebe7;
+  --texto-2: #a5a49e;
+  --texto-3: #77766f;
+  --azul: #3987e5;
+  --naranja: #d95926;
+  --radio: 10px;
+  color-scheme: dark;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  color: var(--texto);
+  background: var(--fondo);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+h1, h2, h3, p { margin: 0; }
+button, select, input { font: inherit; color: inherit; }
+code { background: var(--superficie-2); padding: 1px 6px; border-radius: 4px; }
+
+.app { max-width: 1320px; margin: 0 auto; padding: 0 24px 32px; }
+
+/* ----- Cabecera ----- */
+.cabecera { display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  padding: 20px 0; border-bottom: 1px solid var(--borde); margin-bottom: 20px; flex-wrap: wrap; }
+.marca { display: flex; gap: 12px; align-items: center; }
+.logo { font-size: 28px; }
+.marca h1 { font-size: 20px; letter-spacing: .2px; }
+.marca p { color: var(--texto-2); font-size: 13px; }
+nav { display: flex; gap: 4px; }
+nav a { padding: 6px 12px; border-radius: 6px; color: var(--texto-2); text-decoration: none; font-size: 14px; }
+nav a.activo { background: var(--superficie-2); color: var(--texto); }
+nav a.pronto { opacity: .45; cursor: default; }
+
+/* ----- Filtros ----- */
+.filtros { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 20px; }
+.filtros label, .segmentado, .descarga label { display: flex; flex-direction: column; gap: 4px; }
+.filtros span, .segmentado > span, .descarga label span { font-size: 12px; color: var(--texto-3); }
+select, input[type='date'] { background: var(--superficie); border: 1px solid var(--borde); border-radius: 6px;
+  padding: 7px 10px; min-width: 120px; }
+select:disabled { opacity: .5; }
+.filtros label:first-child select { min-width: 190px; }
+select.en-linea { min-width: 0; padding: 1px 6px; margin-left: 6px; font-size: 13px; }
+
+.segmentado > div { display: flex; background: var(--superficie); border: 1px solid var(--borde);
+  border-radius: 6px; padding: 2px; }
+.segmentado button { background: none; border: 0; padding: 5px 12px; border-radius: 4px; cursor: pointer;
+  color: var(--texto-2); font-size: 14px; }
+.segmentado button.activo { background: var(--superficie-2); color: var(--texto); }
+.segmentado.compacto button { font-size: 13px; padding: 4px 10px; }
+
+.titulo-region { font-size: 24px; margin-bottom: 16px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.titulo-region span { font-size: 14px; font-weight: 400; color: var(--texto-2); }
+.titulo-region .cargando { color: var(--texto-3); }
+
+.contenido { display: flex; flex-direction: column; gap: 16px; transition: opacity .2s; }
+.contenido.atenuado { opacity: .6; }
+
+/* ----- Tarjetas ----- */
+.tarjeta { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 16px; }
+.tarjeta > header { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; align-items: flex-start; }
+.tarjeta h3 { font-size: 15px; font-weight: 600; }
+.tarjeta header p { color: var(--texto-2); font-size: 13px; margin-top: 2px; }
+.nota { color: var(--texto-3); font-size: 12px; margin-top: 4px; }
+.aviso { max-width: 640px; margin: 40px auto; display: flex; flex-direction: column; gap: 8px; }
+
+/* ----- Indicadores ----- */
+.indicadores { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.indicador h3 { font-size: 13px; font-weight: 500; color: var(--texto-2); }
+.indicador .cifra { font-size: 28px; font-weight: 650; margin: 4px 0 2px; font-variant-numeric: tabular-nums; }
+.indicador .detalle { font-size: 13px; color: var(--texto-2); }
+.chip { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 12px;
+  padding: 2px 8px; border-radius: 999px; background: var(--superficie-2); }
+.chip::before { content: ''; width: 10px; height: 10px; border-radius: 3px; background: var(--chip); }
+
+/* ----- Grilla principal ----- */
+.grilla { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.columna { display: flex; flex-direction: column; gap: 16px; }
+
+/* ----- Ranking ----- */
+.ranking { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.ranking button { width: 100%; display: grid; grid-template-columns: 22px minmax(0, 1.1fr) minmax(0, 1fr) 64px 52px;
+  gap: 10px; align-items: center; background: none; border: 0; padding: 6px 8px; border-radius: 6px;
+  cursor: pointer; text-align: left; font-size: 14px; }
+.ranking button:hover { background: var(--superficie-2); }
+.ranking button.activo { background: var(--superficie-2); outline: 1px solid var(--borde); }
+.ranking .puesto { color: var(--texto-3); font-size: 12px; }
+.ranking .nombre { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ranking .barra { height: 8px; background: var(--superficie-2); border-radius: 4px; overflow: hidden; }
+.ranking .barra span { display: block; height: 100%; background: var(--naranja); border-radius: 4px; }
+.ranking .valor, .ranking .pct { text-align: right; font-variant-numeric: tabular-nums; }
+.ranking .pct { color: var(--texto-3); font-size: 12px; }
+.vacio { color: var(--texto-3); }
+
+/* ----- Descarga ----- */
+.descarga { display: flex; flex-direction: column; gap: 12px; }
+.descarga > p { color: var(--texto-2); font-size: 14px; }
+.descarga .fila { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+.boton { background: var(--naranja); color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 6px;
+  font-weight: 600; font-size: 14px; }
+.boton:hover { filter: brightness(1.1); }
+.boton.deshabilitado { opacity: .4; pointer-events: none; }
+
+.pie { margin-top: 32px; color: var(--texto-3); font-size: 12px; text-align: center; }
+
+/* ----- Pantallas pequeñas ----- */
+@media (max-width: 1000px) {
+  .grilla { grid-template-columns: 1fr; }
+  .indicadores { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .indicadores { grid-template-columns: 1fr; }
+  .app { padding: 0 12px 24px; }
+}
