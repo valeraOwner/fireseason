@@ -40,7 +40,8 @@ def en_vivo(actualizar: bool = Query(False, description="Ignorar la caché y vol
             incluir_focos: bool = Query(True, description="Incluir cada foco (puntos del mapa)")):
     """Eventos activos (últimas 72 h) en el Perú y la frontera, ordenados por gravedad."""
     eventos, focos_ev, prov, hora, errores = _calcular(actualizar)
-    resumen = {e: sum(1 for x in eventos if x["estado"] == e) for e in riesgo.ESTADOS}
+    # Cada estado cuenta solo eventos activos; los "en observación" (sin focos en 24 h) van aparte
+    resumen = {e: sum(1 for x in eventos if x["estado"] == e and not x["en_observacion"]) for e in riesgo.ESTADOS}
     resumen["en_observacion"] = sum(x["en_observacion"] for x in eventos)
     resumen["por_confirmar"] = sum(x["por_confirmar"] for x in eventos)
     # Para la lista no hace falta la historia ni los factores completos (van en /eventos/{id})

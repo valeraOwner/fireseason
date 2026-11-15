@@ -27,10 +27,13 @@ Sí: la política necesita INEI y SERNANP, además de FIRMS. Las reservas para p
 
 1. Todo se convierte a coordenadas WGS84 (EPSG:4326), el mismo sistema que usa FIRMS.
 2. Las distancias se calculan en metros con una proyección UTM (zonas 17S, 18S y 19S para el Perú).
-3. En el pipeline (`05_contexto.py`) se precalcula, para cada celda de 0.1°: distancia al poblado más cercano, población a menos de 5 km y si la celda está dentro de un ANP, una zona de amortiguamiento o una reserva PIACI.
-4. En vivo, cada evento consulta la tabla de su celda (respuesta instantánea). Para eventos que pasan a Alto o Crítico se recalcula la distancia exacta.
+3. El pipeline (`05_contexto.py`) descarga las capas y agrega una franja de 5 km alrededor de cada ANP y reserva PIACI.
+4. En vivo, el backend calcula **foco por foco** (con un índice espacial, en milisegundos): si cae dentro de un ANP, zona de amortiguamiento, zona de protección estricta o reserva PIACI; la distancia al poblado más cercano; y los habitantes a menos de 5 km.
 
-Las URLs de descarga de cada portal (geoportal SERNANP, INEI, Ministerio de Cultura) deben verificarse al armar el pipeline.
+**Fuentes usadas en la versión actual (verificadas el 15-nov-2026):**
+
+- SERNANP, servicio oficial `geoservicios.sernanp.gob.pe/.../sernanp_visor/servicio_descarga/MapServer`: capas 1 (ANP nacionales), 2 (zonas reservadas), 3 (ACR), 4 (ACP), 8 (zonas de amortiguamiento), 9 (zonificación; solo "Zona de Protección Estricta") y 32 (reservas PIACI, que el mismo servicio publica con datos del Ministerio de Cultura). De las reservas PIACI solo se usan las ya creadas (Reserva Indígena o Territorial), no las solicitudes.
+- Centros poblados: **GeoNames** (46 772 poblados del Perú). La capa de centros poblados del INEI (sdmr.inei.gob.pe) solo cubre una zona del VRAEM, así que no sirve para todo el país. Limitación: GeoNames conoce la población de solo ~11 000 poblados, así que "habitantes a menos de 5 km" se subestima. Si se consigue el shapefile del Censo 2017 (INEI), puede reemplazar a `poblados.csv` sin cambiar el backend.
 
 ## Unidad de evaluación: el evento
 
@@ -83,7 +86,7 @@ El puntaje define el estado base. Algunas situaciones son tan graves que fuerzan
 **Como mínimo Alto** (si se cumple cualquiera):
 
 - Cualquier foco confirmado dentro de un ANP o de su zona de amortiguamiento.
-- Cualquier evento confirmado a menos de 2 km de un centro poblado.
+- Un evento confirmado de 3 focos o más a menos de 2 km de un centro poblado. *(Ajuste del 15-nov-2026: con "cualquier evento", el 42 % de los eventos reales quedaba en Alto, porque la mitad de los focos del Perú está a menos de 2.3 km de algún caserío.)*
 - Tres focos o más en una zona inusual (menos del 10 % de los años con fuego).
 
 **Como máximo Prevención:**
@@ -127,6 +130,7 @@ Todos los umbrales viven en un archivo de configuración del backend (`backend/a
 | Tiempo mínimo para bajar | 24 h |
 | Radio de agrupación de focos | 2 km |
 | Ventana de seguimiento | 48 h |
+| Focos mínimos para la regla "a < 2 km de un poblado" | 3 |
 | Paso a "En observación" / cierre | 24 h / 72 h sin focos |
 | Frecuencia de consulta a la API FIRMS | cada 15–30 min |
 

@@ -9,6 +9,8 @@ __pycache__/
 # Datos pesados (se regeneran con el pipeline)
 data/raw/**/*.csv
 data/processed/*.parquet
+data/processed/poblados.csv
+data/processed/zonas_protegidas.geojson
 data/contexto/**/*
 !data/**/.gitkeep
 

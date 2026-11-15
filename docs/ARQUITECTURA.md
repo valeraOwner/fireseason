@@ -48,7 +48,7 @@ fireseason/
 │   ├── 02_limpiar.py             type=0, confianza válida, recorte geográfico
 │   ├── 03_armonizar.py           rejilla común + calibración MODIS↔VIIRS
 │   ├── 04_agregar.py             tablas día/semana/mes/año por celda y región
-│   ├── 05_contexto.py            distancia de cada celda a poblados y áreas protegidas
+│   ├── 05_contexto.py            áreas protegidas (SERNANP) y centros poblados (GeoNames)
 │   └── 06_modelo_riesgo.py       climatología + modelo de predicción por celda-semana
 │
 ├── backend/app/

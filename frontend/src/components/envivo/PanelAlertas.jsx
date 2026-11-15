@@ -1,5 +1,7 @@
 import { ESTADOS, ORDEN_ESTADOS, hace } from '../../constantes'
 
+const ZONA_CORTA = { estricta: 'reserva / protección estricta', anp: 'dentro de ANP', amortiguamiento: 'zona de amortiguamiento' }
+
 // Lista de eventos ordenados por gravedad, con filtros por estado.
 export default function PanelAlertas({ eventos, filtro, onFiltro, verObservacion, onVerObservacion, seleccionado, onSeleccionar }) {
   const visibles = eventos.filter((e) => filtro.includes(e.estado) && (verObservacion || !e.en_observacion))
@@ -44,6 +46,7 @@ export default function PanelAlertas({ eventos, filtro, onFiltro, verObservacion
                 <span className="puntaje">{ev.puntaje}</span>
                 <span className="meta">
                   {ev.focos_24h} focos/24 h · {hace(ev.ultima_deteccion)}
+                  {ZONA_CORTA[ev.zona_protegida] && ` · ${ZONA_CORTA[ev.zona_protegida]}`}
                   {ev.en_observacion && ' · en observación'}
                   {ev.por_confirmar && ' · por confirmar'}
                 </span>

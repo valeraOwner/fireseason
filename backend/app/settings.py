@@ -43,4 +43,5 @@ CACHE_MINUTOS = 15        # cada cuánto se vuelve a preguntar a FIRMS (la polí
 # Tablas del pipeline que usa la política de riesgo
 CLIMA_SEMANAL = PROCESSED / "clima_semanal_provincia.parquet"   # factor C
 FRECUENCIA = PROCESSED / "frecuencia_celda_mes.parquet"         # factor D
-CONTEXTO_CELDAS = PROCESSED / "contexto_celdas.parquet"         # factores E y F (lo crea 05_contexto.py)
+ZONAS_PROTEGIDAS = PROCESSED / "zonas_protegidas.geojson"      # factor F (lo crea 05_contexto.py)
+POBLADOS = PROCESSED / "poblados.csv"                           # factor E (lo crea 05_contexto.py)

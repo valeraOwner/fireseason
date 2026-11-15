@@ -20,6 +20,8 @@ import numpy as np
 import pandas as pd
 
 from app import settings
+from app.services import contexto
+from app.services.contexto import GRAVEDAD_ZONA
 
 # ---------------------------------------------------------------------------
 # Parámetros de la política (sección "Parámetros, visualización y validación")
@@ -30,6 +32,9 @@ PARAMETROS = {
     "margen_bajar": 10,          # para bajar hay que quedar 10 puntos bajo el umbral...
     "horas_para_bajar": 24,      # ...durante 24 h seguidas
     "radio_km": 2.0,             # radio de agrupación de focos
+    # Ajuste tras validar con datos reales (15-nov-2026): con "cualquier evento" el 42 % quedaba en Alto,
+    # porque la mitad de los focos está a < 2.3 km de algún caserío. Ahora un foco suelto no basta.
+    "focos_min_regla_poblado": 3,
     "horas_observacion": 24,     # sin focos nuevos por 24 h -> "En observación"
     "horas_cierre": 72,          # sin focos nuevos por 72 h -> el evento se cierra (no se muestra)
     "paso_fotos_h": 6,           # cada cuántas horas se reconstruye el pasado del evento
@@ -60,10 +65,8 @@ def _cargar_tablas():
     _tablas["celdas"] = celdas
     _tablas["clima_sem"] = _leer(settings.CLIMA_SEMANAL).set_index(["region_id", "semana"])
     _tablas["frecuencia"] = _leer(settings.FRECUENCIA).set_index(["cx", "cy", "mes"]).frecuencia
-    # Contexto (poblados y áreas protegidas): opcional hasta que exista el paso 05_contexto.py.
-    # Columnas esperadas: cx, cy, dist_poblado_km, pob_5km, zona ("estricta" | "anp" | "amortiguamiento" | "cerca" | null)
-    ctx = settings.CONTEXTO_CELDAS
-    _tablas["contexto"] = _leer(ctx).set_index(["cx", "cy"]) if ctx.exists() else None
+    # Contexto (poblados y áreas protegidas): existe si se ejecutó pipeline/05_contexto.py
+    _tablas["contexto"] = contexto.disponible()
     return _tablas
 
 
@@ -191,7 +194,6 @@ def factor_f(zona: str | None, hay_contexto: bool) -> int | None:
     return {"estricta": 15, "anp": 12, "amortiguamiento": 8, "cerca": 8}.get(zona, 0)
 
 
-GRAVEDAD_ZONA = {"estricta": 4, "anp": 3, "amortiguamiento": 2, "cerca": 1}
 
 
 # ---------------------------------------------------------------------------
@@ -254,8 +256,8 @@ def _evaluar(x: dict, t: datetime, fijos: dict) -> dict | None:
         critico.append("50 o más focos en 24 h en un solo evento")
     if confirmado and zona in ("estricta", "anp", "amortiguamiento"):
         minimo_alto.append("Foco confirmado dentro de un ANP o su zona de amortiguamiento")
-    if confirmado and dist is not None and dist < 2:
-        minimo_alto.append("Evento confirmado a menos de 2 km de un centro poblado")
+    if confirmado and dist is not None and dist < 2 and n >= PARAMETROS["focos_min_regla_poblado"]:
+        minimo_alto.append(f"Evento de {PARAMETROS['focos_min_regla_poblado']}+ focos a menos de 2 km de un centro poblado")
     if n_inusual >= 3:
         minimo_alto.append("3 o más focos en una zona inusual (arde en menos del 10 % de los años)")
 
@@ -333,18 +335,50 @@ def _fijos(ev: pd.DataFrame, prov: pd.DataFrame, t: dict) -> dict:
     frec = float(ev.loc[(ev.cx == cx) & (ev.cy == cy), "frecuencia"].iloc[0]) if ubic is not None else None
     d = factor_d(frec)
 
-    hay_ctx = t["contexto"] is not None
-    dist = pob = zona = None
+    # E y F: los datos de SERNANP y GeoNames cubren solo el Perú
+    hay_ctx = bool(t["contexto"]) and ubic is not None
+    dist = pob = zona = zona_nombre = poblado = None
     if hay_ctx:
-        ctx = ev[["dist_poblado_km", "pob_5km", "zona"]]
-        dist = None if ctx.dist_poblado_km.isna().all() else float(ctx.dist_poblado_km.min())
-        pob = None if ctx.pob_5km.isna().all() else float(ctx.pob_5km.max())
-        zonas = ctx.zona.dropna()
-        zona = max(zonas, key=GRAVEDAD_ZONA.get) if len(zonas) else None
+        if ev.dist_poblado_km.notna().any():
+            cercano = ev.loc[ev.dist_poblado_km.idxmin()]
+            dist, poblado = float(cercano.dist_poblado_km), cercano.poblado
+        pob = float(ev.pob_5km.max())
+        con_zona = ev[ev.zona.notna()]
+        if len(con_zona):
+            peor = con_zona.loc[con_zona.zona.map(GRAVEDAD_ZONA).idxmax()]
+            zona, zona_nombre = peor.zona, peor.zona_nombre
     return {"c": c, "d": d, "e": factor_e(dist, pob), "f": factor_f(zona, hay_ctx),
             "frecuencia": frec, "dist_km": dist, "pob_5km": pob, "zona": zona, "provincia_id": provincia_id,
+            "zona_nombre": zona_nombre, "poblado": poblado,
             "provincia": ubic.provincia if ubic is not None else None,
             "departamento": ubic.departamento if ubic is not None else None}
+
+
+NOMBRE_ZONA = {"estricta": "Dentro de zona de protección estricta / reserva PIACI",
+               "anp": "Dentro de un área natural protegida",
+               "amortiguamiento": "En zona de amortiguamiento",
+               "cerca": "A menos de 5 km de un área protegida"}
+
+
+def _detalle_e(fijos: dict) -> str:
+    if fijos["provincia_id"] is None:
+        return "Sin datos (fuera del Perú)"
+    if fijos["dist_km"] is None:
+        return "Pendiente: ejecuta pipeline/05_contexto.py"
+    texto = f"{fijos['poblado']} a {fijos['dist_km']:.1f} km"
+    if fijos["pob_5km"]:
+        texto += f" · {fijos['pob_5km']:,.0f} habitantes a menos de 5 km".replace(",", " ")
+    return texto
+
+
+def _detalle_f(fijos: dict) -> str:
+    if fijos["provincia_id"] is None:
+        return "Sin datos (fuera del Perú)"
+    if fijos["f"] is None:
+        return "Pendiente: ejecuta pipeline/05_contexto.py"
+    if fijos["zona"] is None:
+        return "Fuera de áreas protegidas y a más de 5 km"
+    return f"{NOMBRE_ZONA[fijos['zona']]}: {fijos['zona_nombre']}"
 
 
 def _preparar(focos: pd.DataFrame) -> pd.DataFrame:
@@ -357,10 +391,11 @@ def _preparar(focos: pd.DataFrame) -> pd.DataFrame:
     f = f.join(t["frecuencia"], on=["cx", "cy", "mes"])
     en_peru = pd.MultiIndex.from_frame(f[["cx", "cy"]]).isin(t["celdas"].index)
     f["frecuencia"] = f.frecuencia.where(~(en_peru & f.frecuencia.isna()), 0.0)   # Perú sin registro = 0 %
-    if t["contexto"] is not None:
-        f = f.join(t["contexto"][["dist_poblado_km", "pob_5km", "zona"]], on=["cx", "cy"])
+    if t["contexto"]:
+        ctx = contexto.anotar(f.lat.to_numpy(), f.lon.to_numpy())
+        f = pd.concat([f.reset_index(drop=True), ctx], axis=1)
     else:
-        f["dist_poblado_km"], f["pob_5km"], f["zona"] = np.nan, np.nan, None
+        f["dist_poblado_km"], f["pob_5km"], f["zona"], f["zona_nombre"], f["poblado"] = np.nan, 0.0, None, None, None
     return f
 
 
@@ -410,6 +445,10 @@ def calcular_eventos(focos: pd.DataFrame, ahora: datetime) -> tuple[list[dict], 
             "provincia": fijos["provincia"],
             "departamento": fijos["departamento"],
             "en_peru": fijos["provincia_id"] is not None,
+            "zona_protegida": fijos["zona"],
+            "zona_nombre": fijos["zona_nombre"],
+            "poblado_cercano": fijos["poblado"],
+            "dist_poblado_km": None if fijos["dist_km"] is None else round(fijos["dist_km"], 1),
             "focos_24h": hoy["n"],
             "focos_total": len(ev),
             "frp_24h": round(hoy["frp"], 1),
@@ -429,11 +468,9 @@ def calcular_eventos(focos: pd.DataFrame, ahora: datetime) -> tuple[list[dict], 
                       "detalle": (f"Ardió en el {100 * fijos['frecuencia']:.0f} % de los años en este mes"
                                   if fijos["frecuencia"] is not None else "Sin histórico (fuera del Perú)")},
                 "E": {"nombre": "Cercanía a población", "puntos": fijos["e"], "max": 15,
-                      "detalle": (f"Poblado a {fijos['dist_km']:.1f} km" if fijos["dist_km"] is not None
-                                  else "Pendiente: faltan datos de centros poblados (INEI)")},
+                      "detalle": _detalle_e(fijos)},
                 "F": {"nombre": "Áreas protegidas", "puntos": fijos["f"], "max": 15,
-                      "detalle": (fijos["zona"] or "Fuera de áreas protegidas") if fijos["f"] is not None
-                                 else "Pendiente: faltan datos de SERNANP / Min. Cultura"},
+                      "detalle": _detalle_f(fijos)},
             },
             "reglas": reglas,
             "historia": historia,

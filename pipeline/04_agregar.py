@@ -50,6 +50,14 @@ def slug(texto: str) -> str:
 # ---------------------------------------------------------------------------
 # 1. Límites administrativos
 # ---------------------------------------------------------------------------
+def arreglar_texto(t: str) -> str:
+    """geoBoundaries trae algunos nombres con la ñ mal codificada ("CaÃ±ete" -> "Cañete")."""
+    try:
+        return t.encode("latin-1").decode("utf-8") if "Ã" in t else t
+    except UnicodeError:
+        return t
+
+
 def preparar_limites():
     dep = gpd.read_file(config.REGIONES / "geoBoundaries-PER-ADM1_simplified.geojson")
     prov = gpd.read_file(config.REGIONES / "geoBoundaries-PER-ADM2_simplified.geojson")
@@ -68,7 +76,7 @@ def preparar_limites():
     cruce["area"] = cruce.area
     mejor = cruce.sort_values("area").drop_duplicates("prov_idx", keep="last").set_index("prov_idx")
     prov["departamento"] = prov.index.map(mejor.departamento)
-    prov["nombre"] = prov.shapeName
+    prov["nombre"] = prov.shapeName.map(arreglar_texto)
     prov["id"] = [f"{slug(d)}__{slug(p)}" for d, p in zip(prov.departamento, prov.nombre)]
     prov = prov[["id", "nombre", "departamento", "geometry"]]
 

@@ -64,13 +64,13 @@ export default function EnVivo() {
           <article key={id} className="tarjeta indicador estado" style={{ '--estado': ESTADOS[id].color }}>
             <h3><span aria-hidden="true">{ESTADOS[id].icono}</span> {ESTADOS[id].nombre}</h3>
             <p className="cifra">{resumen[id]}</p>
-            <p className="detalle">{ESTADOS[id].accion}</p>
+            <p className="detalle">Activos · {ESTADOS[id].accion}</p>
           </article>
         ))}
         <article className="tarjeta indicador">
           <h3>En observación</h3>
           <p className="cifra">{resumen.en_observacion}</p>
-          <p className="detalle">Sin focos nuevos en 24 h · {resumen.por_confirmar} por confirmar</p>
+          <p className="detalle">Sin focos nuevos en 24 h; conservan su último estado</p>
         </article>
       </div>
 
