@@ -248,3 +248,32 @@ select.en-linea { min-width: 0; padding: 1px 6px; margin-left: 6px; font-size: 1
 .ranking-pred .cambio.baja { color: var(--texto-2); }
 .metodo-pred { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
 .metodo-pred p { color: var(--texto-2); font-size: 14px; max-width: 900px; }
+
+/* ===== Metodología ===== */
+.metodologia { display: flex; flex-direction: column; gap: 16px; }
+.metodologia .indicadores { margin: 0; }
+.bloque { display: flex; flex-direction: column; gap: 10px; }
+.bloque > p, .bloque > header p { color: var(--texto-2); font-size: 14px; max-width: 900px; }
+.grilla.mitades { grid-template-columns: 1fr 1fr; }
+.sensores { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.sensores > div { background: var(--superficie-2); border-radius: 8px; padding: 12px 14px; }
+.sensores h4 { font-size: 15px; margin: 0 0 6px; }
+.sensores ul, .lista { margin: 0; padding-left: 18px; color: var(--texto-2); font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
+.pasos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.indicadores.tres { grid-template-columns: repeat(3, 1fr); }
+.modulos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.modulos li { background: var(--superficie-2); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+.modulos span { color: var(--texto-2); font-size: 13px; }
+.pie .autor { display: block; margin-top: 6px; color: var(--texto-2); }
+.pasos li { display: flex; gap: 10px; background: var(--superficie-2); border-radius: 8px; padding: 12px; }
+.pasos .numero { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--naranja); color: #fff;
+  display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+.pasos p { color: var(--texto-2); font-size: 13px; margin-top: 2px; }
+.fuentes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.fuentes li { display: flex; flex-direction: column; }
+.fuentes a { color: var(--texto); }
+.fuentes span { color: var(--texto-3); font-size: 12px; }
+@media (max-width: 1000px) {
+  .grilla.mitades, .sensores { grid-template-columns: 1fr; }
+  .pasos, .modulos, .indicadores.tres { grid-template-columns: 1fr; }
+}

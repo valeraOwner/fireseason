@@ -26,6 +26,8 @@ export const api = {
   predCeldas: (h, region) => pedir('/prediccion/celdas', { h, region }),
   predRanking: (h, nivel, limite) => pedir('/prediccion/ranking', { h, nivel, limite }),
   predModelo: () => pedir('/prediccion/modelo'),
+  metodologiaFactores: () => pedir('/metodologia/factores'),
+  metodologiaValidacion: () => pedir('/metodologia/validacion'),
   ranking: (nivel, desde, hasta, metrica, departamento) =>
     pedir('/historico/ranking', { nivel, desde, hasta, metrica, departamento }),
 }

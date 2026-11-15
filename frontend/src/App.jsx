@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState } from 'react'
 import EnVivo from './pages/EnVivo'
 import Historico from './pages/Historico'
+import Metodologia from './pages/Metodologia'
 import Prediccion from './pages/Prediccion'
 
 // Three.js pesa ~1 MB: el globo se descarga solo cuando se abre su pestaña
@@ -11,8 +12,8 @@ const PAGINAS = {
   'en-vivo': { nombre: 'En vivo', componente: EnVivo },
   globo: { nombre: 'Globo 3D', componente: Globo },
   prediccion: { nombre: 'Predicción', componente: Prediccion },
+  metodologia: { nombre: 'Metodología', componente: Metodologia },
 }
-const PRONTO = ['Metodología']
 
 // La página activa se guarda en la URL (#en-vivo) para poder compartir el enlace
 const paginaDeUrl = () => (PAGINAS[location.hash.slice(1)] ? location.hash.slice(1) : 'historico')
@@ -44,7 +45,6 @@ export default function App() {
               {id === 'en-vivo' && <span className="punto-vivo" aria-hidden="true" />}{p.nombre}
             </a>
           ))}
-          {PRONTO.map((n) => <a key={n} className="pronto" title="Próximamente">{n}</a>)}
         </nav>
       </header>
       <main>
@@ -55,6 +55,7 @@ export default function App() {
       <footer className="pie">
         Datos: NASA FIRMS (MODIS C6.1, VIIRS 375 m) · Límites: IGN Perú vía geoBoundaries ·
         Herramienta de apoyo, no reemplaza alertas oficiales.
+        <span className="autor">Desarrollado por <strong>Jeanpier Valera</strong> · NASA Space Apps Challenge 2026</span>
       </footer>
     </div>
   )
