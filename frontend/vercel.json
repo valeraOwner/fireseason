@@ -4,6 +4,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/api/:ruta*", "destination": "https://CAMBIAR-POR-TU-BACKEND.onrender.com/api/:ruta*" }
+    { "source": "/api/:ruta*", "destination": "https://fireseason-api.onrender.com/api/:ruta*" }
   ]
 }
