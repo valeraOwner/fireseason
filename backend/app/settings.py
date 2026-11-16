@@ -1,5 +1,8 @@
 """Rutas y parámetros del backend."""
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 RAIZ = Path(__file__).resolve().parents[2]          # carpeta fireseason/
 PROCESSED = RAIZ / "data" / "processed"
@@ -19,15 +22,15 @@ ANIO_MIN, ANIO_CONFIABLE = 2001, 2003
 
 # Desde qué páginas se puede llamar a la API (el frontend de desarrollo usa el puerto 5173)
 ORIGENES_PERMITIDOS = ["http://localhost:5173", "http://127.0.0.1:5173"]
+# En línea, Vercel reenvía /api al backend (no hace falta CORS). Si alguna vez se llama directo,
+# agrega el dominio en la variable de entorno ORIGENES_EXTRA (separados por coma).
+ORIGENES_PERMITIDOS += [o.strip() for o in os.getenv("ORIGENES_EXTRA", "").split(",") if o.strip()]
 
 MAX_FILAS_CSV = 1_000_000
 
 # ---------------------------------------------------------------------------
 # Módulo En vivo (API FIRMS, datos NRT = "casi en tiempo real")
 # ---------------------------------------------------------------------------
-import os                                            # noqa: E402
-from dotenv import load_dotenv                       # noqa: E402
-
 load_dotenv(RAIZ / ".env")
 FIRMS_MAP_KEY = os.getenv("FIRMS_MAP_KEY", "")
 

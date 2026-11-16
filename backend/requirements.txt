@@ -1,0 +1,12 @@
+# Dependencias del backend (lo que instala Render). Las del pipeline están en ../requirements.txt
+fastapi==0.163.0
+uvicorn[standard]==0.54.0
+duckdb==2.0.0
+pandas==3.1.1
+numpy==2.5.4
+requests==2.34.2
+python-dotenv==1.2.4
+geopandas==1.2.0
+shapely==2.2.0
+pyogrio==0.13.0
+pyproj==3.8.0

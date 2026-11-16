@@ -1,0 +1,17 @@
+# Configuración para Render (render.com): el backend FastAPI de FireSeason.
+# En Render: New > Blueprint > elige este repositorio. Te pedirá FIRMS_MAP_KEY.
+services:
+  - type: web
+    name: fireseason-api
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r backend/requirements.txt
+    # Un solo proceso: el hilo que consulta FIRMS cada 15 min vive dentro de él
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/salud
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.14.5
+      - key: FIRMS_MAP_KEY
+        sync: false          # secreto: se escribe a mano en el panel de Render, nunca en el código

@@ -9,8 +9,14 @@ __pycache__/
 # Datos pesados (se regeneran con el pipeline)
 data/raw/**/*.csv
 data/processed/*.parquet
-data/processed/poblados.csv
-data/processed/zonas_protegidas.geojson
+# ...excepto los que necesita el backend en línea (Render los toma de git; ~28 MB en total)
+!data/processed/celdas_region.parquet
+!data/processed/clima_semanal_provincia.parquet
+!data/processed/climatologia_mensual.parquet
+!data/processed/focos_limpios.parquet
+!data/processed/frecuencia_celda_mes.parquet
+!data/processed/prediccion_clima.parquet
+!data/processed/serie_mensual_region.parquet
 data/contexto/**/*
 !data/**/.gitkeep
 
